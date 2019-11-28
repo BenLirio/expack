@@ -5,10 +5,12 @@ import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
 import config from '../../webpack.dev.config.js'
 
-const app = express(),
-            DIST_DIR = __dirname,
-            HTML_FILE = path.join(DIST_DIR, 'index.html'),
-            compiler = webpack(config)
+const app = express()
+const DIST_DIR = __dirname
+const HTML_FILE = path.join(DIST_DIR, 'index.html')
+const compiler = webpack(config)
+const http = require('http').createServer(app)
+const io = require('socket.io')(http)
 
 app.use(webpackDevMiddleware(compiler, {
   publicPath: config.output.publicPath
@@ -27,9 +29,10 @@ app.get('*', (req, res, next) => {
   })
 })
 
-const PORT = process.env.PORT || 8080
+io.on('connection', function(socket){
+  console.log('a user connected with socket',socket.id)
+})
 
-app.listen(PORT, () => {
-    console.log(`App listening to ${PORT}....`)
-    console.log('Press Ctrl+C to quit.')
+http.listen(8080, function(){
+  console.log('listening on *:3000')
 })
