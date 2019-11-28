@@ -61,8 +61,10 @@ app.get('*', (req, res, next) => {
  */
 io.on('connection', function(socket){
   console.log('a user connected with socket',socket.id)
+  socket.on('test', data => {
+    console.log('data:', data)
+  })
 })
-
 
 /**
  * Listen to port 8080 most of the time
